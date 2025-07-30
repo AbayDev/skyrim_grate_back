@@ -1,4 +1,4 @@
-import { DifficultyLevel } from 'src/shared/enums/difficulty-level.enum';
+import { DifficultyLevel } from '../../../../shared/enums/difficulty-level.enum';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('projects')
@@ -13,16 +13,16 @@ export class ProjectEntity {
   description?: string;
 
   @Column({ type: 'timestamp', name: 'date_start', nullable: true })
-  dateStart?: Date;
+  dateStart?: string;
 
   @Column({ type: 'timestamp', name: 'date_w_start', nullable: true })
-  dateWStart?: Date;
+  dateWStart?: string;
 
   @Column({ type: 'timestamp', name: 'date_end', nullable: true })
-  dateEnd?: Date;
+  dateEnd?: string;
 
   @Column({ type: 'timestamp', name: 'date_end_real', nullable: true })
-  dateEndReal?: Date;
+  dateEndReal?: string;
 
   @Column({ type: 'enum', enum: DifficultyLevel })
   level: DifficultyLevel;

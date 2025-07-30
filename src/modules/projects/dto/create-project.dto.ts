@@ -11,15 +11,15 @@ export class CreateProjectDto {
 
   @IsOptional()
   @IsDate()
-  dateStart: Date;
+  dateStart: string;
 
   @IsOptional()
   @IsDate()
-  dateWStart: Date;
+  dateWStart: string;
 
   @IsOptional()
   @IsDate()
-  dateEnd: Date;
+  dateEnd: string;
 
   @IsOptional()
   @IsEnum(DifficultyLevel)
