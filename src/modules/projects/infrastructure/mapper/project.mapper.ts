@@ -1,5 +1,5 @@
 import { BaseEntityMapper } from 'src/shared/mappers/base.mapper';
-import { Project } from '../../domain/entities/project.entity';
+import { Project } from '../../domain/entity/project.entity';
 import { ProjectEntity } from '../database/project.entity';
 
 export class ProjectMapper extends BaseEntityMapper<Project, ProjectEntity> {

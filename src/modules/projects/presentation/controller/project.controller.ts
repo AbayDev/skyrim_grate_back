@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ProjectService } from '../../application/services/project.service';
+import { ProjectService } from '../../application/service/project.service';
 import { ListQueryDto } from 'src/common/list/dto/list-query.dto';
 import { CreateProjectDto } from '../../dto/create-project.dto';
 

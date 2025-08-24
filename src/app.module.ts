@@ -3,12 +3,16 @@ import { ProjectModule } from './modules/projects/projects.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectEntity } from './modules/projects/infrastructure/database/project.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { AuthModule } from './modules/auth/auth.module';
+import { LogsModule } from './modules/logs/logs.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CqrsModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,7 +27,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         synchronize: true,
       }),
     }),
+    LogsModule,
     ProjectModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

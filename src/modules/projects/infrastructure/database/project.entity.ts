@@ -1,9 +1,9 @@
 import { DifficultyLevel } from '../../../../shared/enums/difficulty-level.enum';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('projects')
 export class ProjectEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar', length: 255 })

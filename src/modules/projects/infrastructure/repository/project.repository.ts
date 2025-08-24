@@ -1,9 +1,9 @@
-import { ProjectEntity } from './../database/project.entity';
+import { ProjectEntity } from '../database/project.entity';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from '../../domain/entities/project.entity';
-import { ProjectMapper } from '../mappers/project.mapper';
+import { Project } from '../../domain/entity/project.entity';
+import { ProjectMapper } from '../mapper/project.mapper';
 import { BaseListService } from 'src/common/list/services/base-list.service';
 import { BaseListParams } from 'src/common/list/types/base-list-params.type';
 import { BaseListReturn } from 'src/common/list/types/base-list-return.type';

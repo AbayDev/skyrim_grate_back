@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProjectRepository } from '../../infrastructure/repasitories/project.repository';
+import { ProjectRepository } from '../../infrastructure/repository/project.repository';
 import { BaseListParams } from 'src/common/list/types/base-list-params.type';
 import { CreateProjectDto } from '../../dto/create-project.dto';
 

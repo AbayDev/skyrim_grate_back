@@ -14,19 +14,19 @@ type ProjectProps = {
   /**
    * Дата начало
    */
-  dateStart?: Date;
+  dateStart?: string;
   /**
    * Дата предупреждения начало
    */
-  dateWStart?: Date;
+  dateWStart?: string;
   /**
    * Дата окончания
    */
-  dateEnd?: Date;
+  dateEnd?: string;
   /**
    * Реальное дата окончания
    */
-  dateEndReal?: Date;
+  dateEndReal?: string;
   /**
    * Название иконки проекта
    */
