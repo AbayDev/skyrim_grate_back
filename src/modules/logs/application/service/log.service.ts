@@ -23,20 +23,6 @@ type WriteLogArgs = {
 export class LogService {
   constructor(private readonly logRepository: LogRepository) {}
 
-  /**
-   * Форматирование сообщения лога
-   * @param context событие, например "Регистрация"
-   * @param message основное сообщение
-   *
-   * @example
-   * ```
-   *   const message = this.logService.formatMessage("Регистрация", "Пользователь не смог зарегистроваться, так как никнейс test уже занят")
-   * this.logService.error({
-   *  message,
-   *  payload: JSON.stringify({ nickname: 'test }),
-   * })
-   * ```
-   */
   private formatMessage(context: string, message: string) {
     return `${context}: ${message}`;
   }

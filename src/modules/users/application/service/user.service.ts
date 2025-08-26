@@ -20,11 +20,31 @@ export class UserService {
 
   public async createUser(nickname: string, password: string) {
     try {
-      return this.userRepository.create(nickname, password);
+      const user = await this.userRepository.create(nickname, password);
+
+      await this.logService.info({
+        context: 'Создание пользователя',
+        message: `пользователь ${nickname} был создан`,
+        payload: {
+          actor: {
+            type: LogActor.System,
+            id: 'UserService',
+          },
+          entity: {
+            type: LogEntity.User,
+            id: user.id,
+            details: {
+              nickname,
+            },
+          },
+        },
+      });
+
+      return user;
     } catch (e) {
       await this.logService.error({
         context: 'Создание пользователя',
-        message: `Не удалось создать пользователя ${nickname}`,
+        message: `не удалось создать пользователя ${nickname}`,
         payload: {
           actor: {
             type: LogActor.System,
