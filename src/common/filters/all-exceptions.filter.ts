@@ -23,6 +23,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
+    console.log('message', message);
+    console.log('exception', exception);
+
     response.status(status).json({
       message,
     });

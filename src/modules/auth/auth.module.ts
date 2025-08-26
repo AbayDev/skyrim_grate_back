@@ -12,9 +12,11 @@ import {
 } from './auth.constants';
 import { UserSessionRepository } from './infrastructure/repository/user-session.repository';
 import { UserSessionService } from './application/service/user-session.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserSessionEntity } from './infrastructure/database/user-session.entity';
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule, TypeOrmModule.forFeature([UserSessionEntity])],
   controllers: [AuthController],
   providers: [
     {

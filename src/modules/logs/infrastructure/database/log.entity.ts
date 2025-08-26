@@ -6,15 +6,15 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { LogType } from '../../domain/types/log-type';
-import { JSONValue } from 'src/shared/types/json-value';
 import { isObject } from 'src/shared/utils/isObject';
+import { LogPayload } from '../../domain/types/log-payload';
 
 const PAYLOAD_MAX_LENGTH = 10000;
 
-const truncuateJSONValue = (value: JSONValue) => {
+const truncuateJSONValue = (value: LogPayload | string) => {
   if (typeof value === 'string' && value.length > PAYLOAD_MAX_LENGTH) {
     return value.slice(0, 10000);
-  } else if (Array.isArray(value) || isObject(value)) {
+  } else if (isObject(value)) {
     const stringified = JSON.stringify(value);
 
     if (stringified.length > PAYLOAD_MAX_LENGTH) {
@@ -40,7 +40,7 @@ export class LogEntity {
   message: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  payload?: JSONValue;
+  payload?: LogPayload | string;
 
   /**
    * Ограничение 4000 символов хватит для стека,

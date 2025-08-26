@@ -15,10 +15,10 @@ export class TokenService {
   ) {}
 
   public generateAccessToken(userUuid: string) {
-    return this.jwtAccessService.sign(userUuid);
+    return this.jwtAccessService.sign({ userUuid });
   }
 
   public generateRefreshToken(userUuid: string) {
-    return this.jwtRefreshService.sign(userUuid);
+    return this.jwtRefreshService.sign({ userUuid });
   }
 }

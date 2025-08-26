@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
-import type { TokenService } from '../../service/token.service';
-import type { UserService } from 'src/modules/users/application/service/user.service';
+import { TokenService } from '../../service/token.service';
+import { UserService } from 'src/modules/users/application/service/user.service';
 import { ConflictException } from '@nestjs/common';
 import { AuthTokenResponse } from 'src/modules/auth/domain/types/auth-token-response';
-import type { HashService } from '../../service/hash.service';
-import type { LogService } from 'src/modules/logs/application/service/log.service';
+import { HashService } from '../../service/hash.service';
+import { LogService } from 'src/modules/logs/application/service/log.service';
 import {
   ErrorLogReason,
   LogActor,
