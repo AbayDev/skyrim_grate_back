@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { LogType } from '../../domain/types/log-type';
-import { isObject } from 'src/shared/utils/isObject';
+import { isObject } from 'src/shared/utils/is-object';
 import { LogPayload } from '../../domain/types/log-payload';
 
 const PAYLOAD_MAX_LENGTH = 10000;
