@@ -8,6 +8,7 @@ import {
   LogActor,
   LogEntity,
 } from 'src/modules/logs/domain/types/log-payload';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class UserSessionService {
@@ -15,6 +16,7 @@ export class UserSessionService {
     private readonly hashService: HashService,
     private readonly userSessionRepository: UserSessionRepository,
     private readonly logService: LogService,
+    private readonly tokenService: TokenService,
   ) {}
 
   public async startSession(
@@ -75,16 +77,59 @@ export class UserSessionService {
     }
   }
 
-  public async endSession(refreshTokenHash: string) {
+  public async endSession(userId: string, refreshToken: string) {
     try {
-      await this.userSessionRepository.deleteByRefreshToken(refreshTokenHash);
+      this.tokenService.verifyRefreshToken(refreshToken);
+    } catch (e) {
+      await this.logService.error({
+        context: 'Сессия',
+        message: 'ошибка при проверке токена обновления',
+        payload: {
+          actor: {
+            type: LogActor.User,
+            id: userId,
+          },
+          entity: {
+            type: LogEntity.Token,
+          },
+          reason: ErrorLogReason.TokenVerifyFailed,
+        },
+        errorInstance: e,
+      });
+      throw e;
+    }
+
+    let tokenHash: string;
+    try {
+      tokenHash = await this.hashService.hashToken(refreshToken);
+    } catch (e) {
+      await this.logService.error({
+        context: 'Сессия',
+        message: 'не удалось захешировать токен',
+        payload: {
+          actor: {
+            type: LogActor.User,
+            id: userId,
+          },
+          entity: {
+            type: LogEntity.Token,
+          },
+          reason: ErrorLogReason.TokenHashFailed,
+        },
+        errorInstance: e,
+      });
+      throw e;
+    }
+
+    try {
+      await this.userSessionRepository.deleteByRefreshToken(tokenHash);
       await this.logService.info({
         context: 'Сессия',
         message: 'сессия пользователя закончена',
         payload: {
           actor: {
-            type: LogActor.System,
-            id: 'UserSessionService',
+            type: LogActor.User,
+            id: userId,
           },
           entity: {
             type: LogEntity.UserSession,

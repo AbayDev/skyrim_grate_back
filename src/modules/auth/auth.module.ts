@@ -15,6 +15,10 @@ import { UserSessionService } from './application/service/user-session.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSessionEntity } from './infrastructure/database/user-session.entity';
 import { AuthConfig } from 'src/config/auth.config';
+import { LogoutHandler } from './application/command/logout/logout.handler';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
+import { AuthenticateHandler } from './application/command/authenticate/authenticate.handler';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([UserSessionEntity])],
@@ -47,8 +51,14 @@ import { AuthConfig } from 'src/config/auth.config';
     UserSessionRepository,
     TokenService,
     HashService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
     UserSessionService,
     RegisterHandler,
+    AuthenticateHandler,
+    LogoutHandler,
   ],
 })
 export class AuthModule {}

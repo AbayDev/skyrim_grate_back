@@ -12,6 +12,7 @@ export enum LogActor {
 export enum LogEntity {
   User = 'user',
   UserSession = 'user-session',
+  Token = 'token',
 }
 
 /**
@@ -21,9 +22,11 @@ export enum LogEntity {
 export enum ErrorLogReason {
   UnhandlerError = 'UnhandlerError',
   NicknameAlreadyExist = 'NicknameAlreadyExist',
+  NicknameNotFound = 'NicknameNotFound',
   PasswordHashFailed = 'PasswordHashFailed',
   TokenHashFailed = 'TokenHashFailed',
   TokenGenerateFailed = 'TokenGenerateFailed',
+  TokenVerifyFailed = 'TokenVerifyFailed',
 
   UserCreateFailed = 'UserCreateFailed',
   UserSessionCreateFailed = 'UserSessionCreateFailed',

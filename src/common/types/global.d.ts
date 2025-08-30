@@ -1,0 +1,3 @@
+type RequestUser = {
+  userId: string;
+};

@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../infrastruture/repository/user.repository';
+import {
+  UserFindOneOptions,
+  UserRepository,
+} from '../../infrastruture/repository/user.repository';
 import { LogService } from 'src/modules/logs/application/service/log.service';
 import {
   ErrorLogReason,
@@ -14,8 +17,8 @@ export class UserService {
     private readonly logService: LogService,
   ) {}
 
-  public findByNickname(nickname: string) {
-    return this.userRepository.findByNickname(nickname);
+  public findByNickname(nickname: string, options?: UserFindOneOptions) {
+    return this.userRepository.findByNickname(nickname, options);
   }
 
   public async createUser(nickname: string, password: string) {

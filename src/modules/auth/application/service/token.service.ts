@@ -5,6 +5,10 @@ import {
   JWT_REFRESH_SERVICE_NAME,
 } from '../../auth.constants';
 
+type JwtPayload = {
+  userId: string;
+};
+
 @Injectable()
 export class TokenService {
   constructor(
@@ -14,11 +18,19 @@ export class TokenService {
     private readonly jwtRefreshService: JwtService,
   ) {}
 
-  public generateAccessToken(userUuid: string) {
-    return this.jwtAccessService.sign({ userUuid });
+  public generateAccessToken(userId: string) {
+    return this.jwtAccessService.sign({ userId });
   }
 
-  public generateRefreshToken(userUuid: string) {
-    return this.jwtRefreshService.sign({ userUuid });
+  public generateRefreshToken(userId: string) {
+    return this.jwtRefreshService.sign({ userId });
+  }
+
+  public verifyAccessToken(token: string) {
+    return this.jwtAccessService.verify<JwtPayload>(token);
+  }
+
+  public verifyRefreshToken(token: string) {
+    return this.jwtRefreshService.verify<JwtPayload>(token);
   }
 }

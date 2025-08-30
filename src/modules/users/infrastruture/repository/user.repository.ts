@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../database/user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
+
+export type UserFindOneOptions = FindOneOptions<UserEntity>;
 
 @Injectable()
 export class UserRepository {
@@ -10,9 +12,12 @@ export class UserRepository {
     private readonly repo: Repository<UserEntity>,
   ) {}
 
-  public findByNickname(nickname: string) {
-    return this.repo.findOneBy({
-      nickname,
+  public findByNickname(nickname: string, options?: UserFindOneOptions) {
+    return this.repo.findOne({
+      where: {
+        nickname,
+      },
+      ...options,
     });
   }
 
