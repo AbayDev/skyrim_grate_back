@@ -3,7 +3,7 @@ import { RegisterHandler } from './application/command/register/register.handler
 import { AuthController } from './presentation/controller/auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { TokenService } from './application/service/token.service';
 import { HashService } from './application/service/hash.service';
 import {
@@ -14,6 +14,7 @@ import { UserSessionRepository } from './infrastructure/repository/user-session.
 import { UserSessionService } from './application/service/user-session.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSessionEntity } from './infrastructure/database/user-session.entity';
+import { AuthConfig } from 'src/config/auth.config';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([UserSessionEntity])],
@@ -21,24 +22,24 @@ import { UserSessionEntity } from './infrastructure/database/user-session.entity
   providers: [
     {
       provide: JWT_ACCESS_SERVICE_NAME,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
+      inject: [AuthConfig.KEY],
+      useFactory: (authConfig: ConfigType<typeof AuthConfig>) => {
         return new JwtService({
-          secret: configService.get('JWT_ACCESS_SECRET'),
+          secret: authConfig.jwtAccess.secret,
           signOptions: {
-            expiresIn: configService.get('JWT_ACCESS_EXPIRES_IN'),
+            expiresIn: authConfig.jwtAccess.expiresIn,
           },
         });
       },
     },
     {
       provide: JWT_REFRESH_SERVICE_NAME,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
+      inject: [AuthConfig.KEY],
+      useFactory: (authConfig: ConfigType<typeof AuthConfig>) => {
         return new JwtService({
-          secret: configService.get('JWT_REFRESH_SECRET'),
+          secret: authConfig.jwtRefresh.secret,
           signOptions: {
-            expiresIn: configService.get('JWT_REFRESH_EXPIRES_IN'),
+            expiresIn: authConfig.jwtRefresh.expiresIn,
           },
         });
       },

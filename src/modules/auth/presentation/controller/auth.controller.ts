@@ -1,12 +1,18 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Req, Res } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { RegisterCommand } from '../../application/command/register/register.command';
 import { RegisterDto } from '../../dto/register.dto';
 import { Request, Response } from 'express';
+import { ConfigType } from '@nestjs/config';
+import { AuthConfig } from 'src/config/auth.config';
 
 @Controller('/auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    @Inject(AuthConfig.KEY)
+    private readonly authConfig: ConfigType<typeof AuthConfig>,
+  ) {}
 
   @Post('/authenticate')
   authenticate() {}
@@ -31,10 +37,10 @@ export class AuthController {
     );
 
     res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      httpOnly: this.authConfig.jwtRefresh.cookie.httpOnly,
+      secure: this.authConfig.jwtRefresh.cookie.secure,
+      sameSite: this.authConfig.jwtRefresh.cookie.sameSite,
+      maxAge: this.authConfig.jwtRefresh.cookie.maxAge,
     });
 
     return res.status(200).json(result);
