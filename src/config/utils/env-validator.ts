@@ -1,10 +1,10 @@
-class EnvError extends Error {
+export class EnvError extends Error {
   constructor(message: string) {
     super(`[ENV ERROR]: ${message}, пожалуйста заполните настройку в .env`);
   }
 }
 
-class EnvValidator {
+export class EnvValidator {
   static readonly TRUE_VALUES = ['1', 'true', 'yes', 'enabled'];
   static readonly FALSE_VALUES = ['0', 'false', 'no', 'disabled'];
 
@@ -59,11 +59,14 @@ class EnvValidator {
     );
   }
 
-  public isEnum<T extends string>(value: string, enums: T[]): value is T {
+  public isEnum<T extends string>(
+    value: string,
+    enums: readonly T[],
+  ): value is T {
     return enums.includes(value as T);
   }
 
-  public getEnvEnum<T extends string>(name: string, enums: T[]): T {
+  public getEnvEnum<T extends string>(name: string, enums: readonly T[]): T {
     const value = this.getEnvVar(name);
 
     if (!this.isEnum(value, enums)) {
@@ -99,7 +102,7 @@ class EnvValidator {
 
   public getEnvEnumDefault<T extends string>(
     name: string,
-    enums: T[],
+    enums: readonly T[],
     defaultValue: T,
   ): T {
     return this.withDefault(

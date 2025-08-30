@@ -1,4 +1,4 @@
-import { envValidator } from './utils/EnvValidator';
+import { envValidator } from './utils/env-validator';
 import { registerAs } from '@nestjs/config';
 
 export const AuthConfig = registerAs('auth', () => {

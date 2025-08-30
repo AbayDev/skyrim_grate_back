@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { envValidator } from './utils/EnvValidator';
+import { envValidator } from './utils/env-validator';
 
 export const DatabaseConfig = registerAs('database', () => ({
   host: envValidator.getEnvString('DB_HOST'),
