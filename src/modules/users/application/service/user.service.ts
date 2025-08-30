@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  UserFindByOptions,
   UserFindOneOptions,
   UserRepository,
 } from '../../infrastruture/repository/user.repository';
@@ -19,6 +20,10 @@ export class UserService {
 
   public findByNickname(nickname: string, options?: UserFindOneOptions) {
     return this.userRepository.findByNickname(nickname, options);
+  }
+
+  public findOneBy(options: UserFindByOptions) {
+    return this.userRepository.findOneBy(options);
   }
 
   public async createUser(nickname: string, password: string) {

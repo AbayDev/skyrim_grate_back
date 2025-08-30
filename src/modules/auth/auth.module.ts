@@ -19,6 +19,7 @@ import { LogoutHandler } from './application/command/logout/logout.handler';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthenticateHandler } from './application/command/authenticate/authenticate.handler';
+import { ReauthenticateHandler } from './application/command/reauthenticate/reauthenticate.handler';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([UserSessionEntity])],
@@ -59,6 +60,7 @@ import { AuthenticateHandler } from './application/command/authenticate/authenti
     RegisterHandler,
     AuthenticateHandler,
     LogoutHandler,
+    ReauthenticateHandler,
   ],
 })
 export class AuthModule {}

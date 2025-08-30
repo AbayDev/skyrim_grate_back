@@ -51,10 +51,7 @@ export class AuthenticateHandler
       throw new NotFoundException('Не верный никнейм или пароль');
     }
 
-    console.log('password', command.password);
-    console.log('passwordHash', user);
-
-    const isPasswordEquals = await this.hashService.comparePassword(
+    const isPasswordEquals = await this.hashService.compare(
       command.password,
       user.passwordHash,
     );

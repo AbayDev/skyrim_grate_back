@@ -14,7 +14,11 @@ export class HashService {
     return bcrypt.hash(password, HashService.AUTH_HASH_PASSWORD_SALT);
   }
 
-  public comparePassword(password: string, hash: string) {
-    return bcrypt.compare(password, hash);
+  public compare(value: string, hash: string) {
+    return bcrypt.compare(value, hash);
+  }
+
+  public compareSync(value: string, hash: string) {
+    return bcrypt.compareSync(value, hash);
   }
 }

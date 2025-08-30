@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Inject,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Body, Controller, Inject, Post, Res } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { RegisterCommand } from '../../application/command/register/register.command';
 import { RegisterDto } from '../../dto/register.dto';
@@ -18,6 +10,10 @@ import { User } from 'src/common/decorators/user.decorator';
 import { Public } from '../../decorators/public.decorator';
 import { AuthenticateDto } from '../../dto/authenticate.dto';
 import { AuthenticateCommand } from '../../application/command/authenticate/authenticate.command';
+import { ReauthenticateCommand } from '../../application/command/reauthenticate/reauthenticate.command';
+import { Ip } from 'src/common/decorators/ip.decorator';
+import { UserAgent } from 'src/common/decorators/user-agent.decorator';
+import { RefreshToken } from 'src/common/decorators/refresh-token';
 
 @Controller('/auth')
 export class AuthController {
@@ -30,16 +26,11 @@ export class AuthController {
   @Post('/authenticate')
   @Public()
   async authenticate(
-    @Req() req: Request,
     @Res() res: Response,
     @Body() data: AuthenticateDto,
+    @Ip() ip: string | undefined,
+    @UserAgent() userAgent: string | undefined,
   ) {
-    const forwardedIps = req.headers['x-forwarded-for'];
-
-    // Берём первый IP-адрес из списка (если он есть), иначе используем request.ip
-    const ip = forwardedIps ? forwardedIps.toString().split(',')[0] : req.ip;
-    const userAgent = req.headers['user-agent'];
-
     const result = await this.commandBus.execute(
       new AuthenticateCommand(data.nickname, data.password, {
         ip,
@@ -47,31 +38,52 @@ export class AuthController {
       }),
     );
 
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: this.authConfig.jwtRefresh.cookie.httpOnly,
-      secure: this.authConfig.jwtRefresh.cookie.secure,
-      sameSite: this.authConfig.jwtRefresh.cookie.sameSite,
-      maxAge: this.authConfig.jwtRefresh.cookie.maxAge,
-    });
+    this.setRefrestTokenCookie(res, result.refreshToken);
 
     return res.status(200).json({
       token: result.accessToken,
     });
   }
 
+  @Post('/reauthenticate')
+  @Public()
+  async reauthenticate(
+    @Res() res: Response,
+    @Ip() ip: string | undefined,
+    @UserAgent() userAgent: string | undefined,
+    @RefreshToken() refreshToken: string,
+  ) {
+    const result = await this.commandBus.execute(
+      new ReauthenticateCommand(refreshToken, {
+        ip,
+        userAgent,
+      }),
+    );
+
+    this.setRefrestTokenCookie(res, result.refreshToken);
+
+    return res.status(200).json({
+      token: result.accessToken,
+    });
+  }
+
+  private setRefrestTokenCookie(res: Response, refreshToken: string) {
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: this.authConfig.jwtRefresh.cookie.httpOnly,
+      secure: this.authConfig.jwtRefresh.cookie.secure,
+      sameSite: this.authConfig.jwtRefresh.cookie.sameSite,
+      maxAge: this.authConfig.jwtRefresh.cookie.maxAge,
+    });
+  }
+
   @Post('/registration')
   @Public()
   async registration(
-    @Req() req: Request,
     @Res() res: Response,
     @Body() data: RegisterDto,
+    @Ip() ip: string | undefined,
+    @UserAgent() userAgent: string | undefined,
   ) {
-    const forwardedIps = req.headers['x-forwarded-for'];
-
-    // Берём первый IP-адрес из списка (если он есть), иначе используем request.ip
-    const ip = forwardedIps ? forwardedIps.toString().split(',')[0] : req.ip;
-    const userAgent = req.headers['user-agent'];
-
     const result = await this.commandBus.execute(
       new RegisterCommand(data.nickname, data.password, {
         ip,
@@ -79,12 +91,7 @@ export class AuthController {
       }),
     );
 
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: this.authConfig.jwtRefresh.cookie.httpOnly,
-      secure: this.authConfig.jwtRefresh.cookie.secure,
-      sameSite: this.authConfig.jwtRefresh.cookie.sameSite,
-      maxAge: this.authConfig.jwtRefresh.cookie.maxAge,
-    });
+    this.setRefrestTokenCookie(res, result.refreshToken);
 
     return res.status(200).json({
       token: result.accessToken,
@@ -94,16 +101,9 @@ export class AuthController {
   @Post('/logout')
   async logout(
     @User() user: RequestUser,
-    @Req() req: Request,
     @Res() res: Response,
+    @RefreshToken() refreshToken: string,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const refreshToken = req.cookies['refreshToken'] as string;
-
-    if (!refreshToken) {
-      throw new UnauthorizedException('Не найден refreshToken');
-    }
-
     await this.commandBus.execute(new LogoutCommand(user.userId, refreshToken));
     res.clearCookie('refreshToken');
 

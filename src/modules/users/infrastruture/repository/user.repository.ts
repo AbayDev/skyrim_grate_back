@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../database/user.entity';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 
 export type UserFindOneOptions = FindOneOptions<UserEntity>;
+export type UserFindByOptions = FindOptionsWhere<UserEntity>;
 
 @Injectable()
 export class UserRepository {
@@ -19,6 +20,10 @@ export class UserRepository {
       },
       ...options,
     });
+  }
+
+  public findOneBy(options: UserFindByOptions) {
+    return this.repo.findOneBy(options);
   }
 
   public create(nickname: string, password: string) {

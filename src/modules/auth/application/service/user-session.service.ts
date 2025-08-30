@@ -99,30 +99,22 @@ export class UserSessionService {
       throw e;
     }
 
-    let tokenHash: string;
     try {
-      tokenHash = await this.hashService.hashToken(refreshToken);
-    } catch (e) {
-      await this.logService.error({
-        context: 'Сессия',
-        message: 'не удалось захешировать токен',
-        payload: {
-          actor: {
-            type: LogActor.User,
-            id: userId,
-          },
-          entity: {
-            type: LogEntity.Token,
-          },
-          reason: ErrorLogReason.TokenHashFailed,
-        },
-        errorInstance: e,
-      });
-      throw e;
-    }
+      const sessions = await this.userSessionRepository.getByUserId(userId);
 
-    try {
-      await this.userSessionRepository.deleteByRefreshToken(tokenHash);
+      const currentSession = sessions.find((session) => {
+        return this.hashService.compareSync(
+          refreshToken,
+          session.refreshTokenHash,
+        );
+      });
+
+      if (currentSession) {
+        await this.userSessionRepository.deleteByRefreshToken(
+          currentSession.refreshTokenHash,
+        );
+      }
+
       await this.logService.info({
         context: 'Сессия',
         message: 'сессия пользователя закончена',

@@ -17,6 +17,12 @@ export class UserSessionRepository {
     });
   }
 
+  public getByUserId(userId: string) {
+    return this.repo.findBy({
+      userId: userId,
+    });
+  }
+
   public create(session: UserSessionCreate) {
     const newSession = new UserSessionEntity();
     newSession.userId = session.userId;
