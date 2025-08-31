@@ -22,9 +22,9 @@ export class UserEntity {
   @OneToMany(() => UserSessionEntity, (session) => session.user)
   sessions: UserSessionEntity[];
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', select: false })
   createdAt: string;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'updated_at', select: false })
   updatedAt: string;
 }

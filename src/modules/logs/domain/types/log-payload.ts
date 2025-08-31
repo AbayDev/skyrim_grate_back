@@ -28,6 +28,8 @@ export enum ErrorLogReason {
   TokenGenerateFailed = 'TokenGenerateFailed',
   TokenVerifyFailed = 'TokenVerifyFailed',
 
+  UserNotFound = 'UserNotFound',
+
   UserCreateFailed = 'UserCreateFailed',
   UserSessionCreateFailed = 'UserSessionCreateFailed',
   UserSessionDeleteFailed = 'UserSessionDeleteFailed',

@@ -22,6 +22,12 @@ export class UserService {
     return this.userRepository.findByNickname(nickname, options);
   }
 
+  public findById(id: string) {
+    return this.userRepository.findOneBy({
+      id,
+    });
+  }
+
   public findOneBy(options: UserFindByOptions) {
     return this.userRepository.findOneBy(options);
   }

@@ -12,6 +12,7 @@ import { LogEntity } from './modules/logs/infrastructure/database/log.entity';
 import { UsersModule } from './modules/users/users.module';
 import { DatabaseConfig } from './config/database.config';
 import { AuthConfig } from './config/auth.config';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AuthConfig } from './config/auth.config';
     ProjectModule,
     UsersModule,
     AuthModule,
+    ProfileModule,
   ],
   controllers: [],
   providers: [],
