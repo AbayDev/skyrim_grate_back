@@ -8,11 +8,13 @@ export class EnvValidator {
   static readonly TRUE_VALUES = ['1', 'true', 'yes', 'enabled'];
   static readonly FALSE_VALUES = ['0', 'false', 'no', 'disabled'];
 
-  private isEnvValueEmpty(value: unknown): value is undefined | null | '' {
+  private static isEnvValueEmpty(
+    value: unknown,
+  ): value is undefined | null | '' {
     return value === undefined || value === null || value === '';
   }
 
-  private getEnvVar(name: string): string {
+  private static getEnvVar(name: string): string {
     const value = process.env[name];
 
     if (this.isEnvValueEmpty(value)) {
@@ -22,11 +24,11 @@ export class EnvValidator {
     return value.trim();
   }
 
-  public getEnvString(name: string): string {
+  public static getEnvString(name: string): string {
     return this.getEnvVar(name);
   }
 
-  public getEnvNumber(name: string): number {
+  public static getEnvNumber(name: string): number {
     const value = this.getEnvVar(name);
     const numbered = Number(value);
 
@@ -39,7 +41,7 @@ export class EnvValidator {
     return numbered;
   }
 
-  public getEnvBoolean(name: string): boolean {
+  public static getEnvBoolean(name: string): boolean {
     const value = this.getEnvVar(name).toLowerCase();
 
     const isTrue = EnvValidator.TRUE_VALUES.includes(value);
@@ -59,14 +61,17 @@ export class EnvValidator {
     );
   }
 
-  public isEnum<T extends string>(
+  public static isEnum<T extends string>(
     value: string,
     enums: readonly T[],
   ): value is T {
     return enums.includes(value as T);
   }
 
-  public getEnvEnum<T extends string>(name: string, enums: readonly T[]): T {
+  public static getEnvEnum<T extends string>(
+    name: string,
+    enums: readonly T[],
+  ): T {
     const value = this.getEnvVar(name);
 
     if (!this.isEnum(value, enums)) {
@@ -78,7 +83,11 @@ export class EnvValidator {
     return value;
   }
 
-  private withDefault<T>(name: string, getter: () => T, defaultValue: T): T {
+  private static withDefault<T>(
+    name: string,
+    getter: () => T,
+    defaultValue: T,
+  ): T {
     const value = process.env[name];
 
     if (this.isEnvValueEmpty(value)) {
@@ -88,19 +97,25 @@ export class EnvValidator {
     return getter();
   }
 
-  public getEnvStringDefault(name: string, defaultValue: string) {
+  public static getEnvStringDefault(name: string, defaultValue: string) {
     return this.withDefault(name, () => this.getEnvString(name), defaultValue);
   }
 
-  public getEnvNumberDefault(name: string, defaultValue: number): number {
+  public static getEnvNumberDefault(
+    name: string,
+    defaultValue: number,
+  ): number {
     return this.withDefault(name, () => this.getEnvNumber(name), defaultValue);
   }
 
-  public getEnvBooleanDefault(name: string, defaultValue: boolean): boolean {
+  public static getEnvBooleanDefault(
+    name: string,
+    defaultValue: boolean,
+  ): boolean {
     return this.withDefault(name, () => this.getEnvBoolean(name), defaultValue);
   }
 
-  public getEnvEnumDefault<T extends string>(
+  public static getEnvEnumDefault<T extends string>(
     name: string,
     enums: readonly T[],
     defaultValue: T,
@@ -112,5 +127,3 @@ export class EnvValidator {
     );
   }
 }
-
-export const envValidator = new EnvValidator();

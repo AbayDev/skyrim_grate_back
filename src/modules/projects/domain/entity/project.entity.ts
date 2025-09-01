@@ -38,7 +38,7 @@ type ProjectProps = {
   /**
    * Идентификатор исполнителя проекта
    */
-  userId: number;
+  userId: string;
 };
 
 export class Project extends BaseEntity<ProjectProps> {}

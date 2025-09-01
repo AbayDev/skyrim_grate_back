@@ -38,7 +38,7 @@ export class BaseListService<T extends Record<string, any>> {
   }
 
   public async findListByUser(
-    userId: number,
+    userId: string,
     params: BaseListParams,
   ): Promise<BaseListReturn<T>> {
     params.filter = withUserFilter(params.filter, userId);

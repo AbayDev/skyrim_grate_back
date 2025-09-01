@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserSessionCreate } from '../../domain/types/user-session-create';
-import { HashService } from './hash.service';
 import { UserSessionRepository } from '../../infrastructure/repository/user-session.repository';
 import { LogService } from 'src/modules/logs/application/service/log.service';
 import {
@@ -9,11 +8,11 @@ import {
   LogEntity,
 } from 'src/modules/logs/domain/types/log-payload';
 import { TokenService } from './token.service';
+import { HashService } from './hash.service';
 
 @Injectable()
 export class UserSessionService {
   constructor(
-    private readonly hashService: HashService,
     private readonly userSessionRepository: UserSessionRepository,
     private readonly logService: LogService,
     private readonly tokenService: TokenService,
@@ -26,7 +25,7 @@ export class UserSessionService {
   ) {
     let refreshTokenHash: string;
     try {
-      refreshTokenHash = await this.hashService.hashToken(session.refreshToken);
+      refreshTokenHash = await HashService.hashToken(session.refreshToken);
     } catch (e) {
       await this.logService.error({
         context: 'Сессия',
@@ -52,7 +51,7 @@ export class UserSessionService {
     try {
       return await this.userSessionRepository.create({
         ...session,
-        refreshTokenHash: refreshTokenHash,
+        refreshTokenHash,
       });
     } catch (e) {
       await this.logService.error({
@@ -103,10 +102,7 @@ export class UserSessionService {
       const sessions = await this.userSessionRepository.getByUserId(userId);
 
       const currentSession = sessions.find((session) => {
-        return this.hashService.compareSync(
-          refreshToken,
-          session.refreshTokenHash,
-        );
+        return HashService.compareSync(refreshToken, session.refreshTokenHash);
       });
 
       if (currentSession) {

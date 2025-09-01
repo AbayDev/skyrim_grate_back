@@ -19,7 +19,7 @@ export class UserSessionRepository {
 
   public getByUserId(userId: string) {
     return this.repo.findBy({
-      userId: userId,
+      userId,
     });
   }
 

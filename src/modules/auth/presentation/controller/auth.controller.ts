@@ -2,7 +2,7 @@ import { Body, Controller, Inject, Post, Res } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { RegisterCommand } from '../../application/command/register/register.command';
 import { RegisterDto } from '../../dto/register.dto';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ConfigType } from '@nestjs/config';
 import { AuthConfig } from 'src/config/auth.config';
 import { LogoutCommand } from '../../application/command/logout/logout.command';

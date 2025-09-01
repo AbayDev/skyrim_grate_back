@@ -4,7 +4,6 @@ import { TokenService } from '../../service/token.service';
 import { UserService } from 'src/modules/users/application/service/user.service';
 import { ConflictException } from '@nestjs/common';
 import { AuthTokenResponse } from 'src/modules/auth/domain/types/auth-token-response';
-import { HashService } from '../../service/hash.service';
 import { LogService } from 'src/modules/logs/application/service/log.service';
 import {
   ErrorLogReason,
@@ -12,15 +11,17 @@ import {
   LogEntity,
 } from 'src/modules/logs/domain/types/log-payload';
 import { UserSessionService } from '../../service/user-session.service';
+import { HashService } from '../../service/hash.service';
+import { PasswordStrengthService } from '../../service/password-strength.service';
 
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand> {
   constructor(
     private readonly tokenService: TokenService,
-    private readonly hashService: HashService,
     private readonly userService: UserService,
     private readonly userSessionService: UserSessionService,
     private readonly logService: LogService,
+    private readonly passwordStrengthService: PasswordStrengthService,
   ) {}
 
   async execute(command: RegisterCommand): Promise<AuthTokenResponse> {
@@ -49,9 +50,37 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
       throw new ConflictException(errorMessage);
     }
 
+    try {
+      await this.passwordStrengthService.validate(
+        command.password.normalize('NFC'),
+      );
+    } catch (e) {
+      await this.logService.error({
+        context: 'Регистрация',
+        message: 'введенный пароль в базе скомпрометированых данных',
+        payload: {
+          actor: {
+            type: LogActor.System,
+            id: 'PasswordStrengthService',
+          },
+          entity: {
+            type: LogEntity.User,
+            details: {
+              nickname: command.nickname,
+            },
+          },
+          reason: ErrorLogReason.PasswordStrengthFailed,
+        },
+        errorInstance: e,
+      });
+      throw e;
+    }
+
     let passwordHash: string;
     try {
-      passwordHash = await this.hashService.hashPassword(command.password);
+      passwordHash = await HashService.hashPassword(
+        command.password.normalize('NFC'),
+      );
     } catch (e) {
       await this.logService.error({
         context: 'Регистрация',

@@ -1,5 +1,6 @@
+import { UserEntity } from 'src/modules/users/infrastruture/database/user.entity';
 import { DifficultyLevel } from '../../../../shared/enums/difficulty-level.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('projects')
 export class ProjectEntity {
@@ -30,6 +31,9 @@ export class ProjectEntity {
   @Column({ type: 'varchar', name: 'icon_name', length: 50 })
   iconName: string;
 
-  @Column({ type: 'int', name: 'user_id' })
-  userId: number;
+  @ManyToOne(() => UserEntity, (user) => user.projects, { onDelete: 'CASCADE' })
+  user: UserEntity;
+
+  @Column()
+  userId: string;
 }

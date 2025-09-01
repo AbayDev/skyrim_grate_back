@@ -1,30 +1,31 @@
-import { envValidator } from './utils/env-validator';
+import { EnvValidator } from './utils/env-validator';
 import { registerAs } from '@nestjs/config';
 
 export const AuthConfig = registerAs('auth', () => {
   return {
+    authAttempt: EnvValidator.getEnvNumberDefault('AUTH_ATTEMPT_COUNT', 3),
     jwtAccess: {
-      secret: envValidator.getEnvString('JWT_ACCESS_SECRET'),
-      expiresIn: envValidator.getEnvString('JWT_ACCESS_EXPIRES_IN'),
+      secret: EnvValidator.getEnvString('JWT_ACCESS_SECRET'),
+      expiresIn: EnvValidator.getEnvString('JWT_ACCESS_EXPIRES_IN'),
     },
     jwtRefresh: {
-      secret: envValidator.getEnvString('JWT_REFRESH_SECRET'),
-      expiresIn: envValidator.getEnvString('JWT_REFRESH_EXPIRES_IN'),
+      secret: EnvValidator.getEnvString('JWT_REFRESH_SECRET'),
+      expiresIn: EnvValidator.getEnvString('JWT_REFRESH_EXPIRES_IN'),
       cookie: {
-        sameSite: envValidator.getEnvEnumDefault(
+        sameSite: EnvValidator.getEnvEnumDefault(
           'JWT_REFRESH_COOKIE_SAME_SITE',
           ['strict', 'lax', 'none'],
           'strict',
         ),
-        maxAge: envValidator.getEnvNumberDefault(
+        maxAge: EnvValidator.getEnvNumberDefault(
           'JWT_REFRESH_COOKIE_MAX_AGE',
           1000 * 60 * 60 * 24 * 7,
         ),
-        secure: envValidator.getEnvBooleanDefault(
+        secure: EnvValidator.getEnvBooleanDefault(
           'JWT_REFRESH_COOKIE_SECURE',
           true,
         ),
-        httpOnly: envValidator.getEnvBooleanDefault(
+        httpOnly: EnvValidator.getEnvBooleanDefault(
           'JWT_REFRESH_COOKIE_HTTP_ONLY',
           true,
         ),

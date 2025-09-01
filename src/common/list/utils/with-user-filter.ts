@@ -3,7 +3,7 @@ import { BaseListFilterGroup } from '../types/base-filter.type';
 
 export function withUserFilter(
   filter: BaseListFilterGroup | undefined,
-  userId: number,
+  userId: string,
 ): BaseListFilterGroup {
   const userFilter: BaseListFilterGroup = {
     operator: 'AND',

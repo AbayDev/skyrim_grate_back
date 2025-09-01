@@ -1,7 +1,7 @@
 import { createParamDecorator } from '@nestjs/common';
 import { Request } from 'express';
 
-const getRequestUserAgent = (req: Request) => {
+export const getRequestUserAgent = (req: Request) => {
   return req.headers['user-agent'];
 };
 

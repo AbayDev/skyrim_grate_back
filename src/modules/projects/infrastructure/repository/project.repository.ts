@@ -8,6 +8,7 @@ import { BaseListService } from 'src/common/list/services/base-list.service';
 import { BaseListParams } from 'src/common/list/types/base-list-params.type';
 import { BaseListReturn } from 'src/common/list/types/base-list-return.type';
 import { CreateProjectDto } from '../../dto/create-project.dto';
+import { PatchProjectDto } from '../../dto/patch-project.dto';
 
 @Injectable()
 export class ProjectRepository extends BaseListService<ProjectEntity> {
@@ -20,8 +21,14 @@ export class ProjectRepository extends BaseListService<ProjectEntity> {
 
   private mapper = new ProjectMapper();
 
+  public async findById(id: number) {
+    return this.ormRepo.findOneBy({
+      id,
+    });
+  }
+
   public async findByUserId(
-    userId: number,
+    userId: string,
     params: BaseListParams,
   ): Promise<BaseListReturn<Project>> {
     const { items, total } = await this.findListByUser(userId, params);
@@ -32,7 +39,7 @@ export class ProjectRepository extends BaseListService<ProjectEntity> {
     };
   }
 
-  public async create(userId: number, project: CreateProjectDto) {
+  public async create(userId: string, project: CreateProjectDto) {
     const projectEntity = new ProjectEntity();
     projectEntity.iconName = project.iconName;
     projectEntity.name = project.name;
@@ -42,11 +49,21 @@ export class ProjectRepository extends BaseListService<ProjectEntity> {
     projectEntity.dateEnd = project.dateEnd;
     projectEntity.level = project.level;
     projectEntity.userId = userId;
-    return this.ormRepo.save(projectEntity);
+    const newProject = await this.ormRepo.save(projectEntity);
+    return this.mapper.toDomain(newProject);
   }
 
   public async save(project: Project) {
     const projectEntity = this.mapper.toEntityDatabase(project);
     await this.ormRepo.save(projectEntity);
+  }
+
+  public update(project: PatchProjectDto) {
+    return this.ormRepo.update(
+      {
+        id: project.id,
+      },
+      project,
+    );
   }
 }

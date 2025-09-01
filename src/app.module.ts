@@ -13,12 +13,16 @@ import { UsersModule } from './modules/users/users.module';
 import { DatabaseConfig } from './config/database.config';
 import { AuthConfig } from './config/auth.config';
 import { ProfileModule } from './modules/profile/profile.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TransformIntercepter } from './common/intercepters/transform-interceptor';
+import { RedisConfig } from './config/redis.config';
+import { RateLimitInterceptor } from './common/redis/rate-limit.intercepter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [DatabaseConfig, AuthConfig],
+      load: [DatabaseConfig, AuthConfig, RedisConfig],
     }),
     CqrsModule.forRoot(),
     TypeOrmModule.forRootAsync({
@@ -42,6 +46,15 @@ import { ProfileModule } from './modules/profile/profile.module';
     ProfileModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RateLimitInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformIntercepter,
+    },
+  ],
 })
 export class AppModule {}

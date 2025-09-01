@@ -1,4 +1,5 @@
 import { UserSessionEntity } from 'src/modules/auth/infrastructure/database/user-session.entity';
+import { ProjectEntity } from 'src/modules/projects/infrastructure/database/project.entity';
 import {
   Column,
   CreateDateColumn,
@@ -21,6 +22,9 @@ export class UserEntity {
 
   @OneToMany(() => UserSessionEntity, (session) => session.user)
   sessions: UserSessionEntity[];
+
+  @OneToMany(() => ProjectEntity, (project) => project.user)
+  projects: ProjectEntity[];
 
   @CreateDateColumn({ name: 'created_at', select: false })
   createdAt: string;

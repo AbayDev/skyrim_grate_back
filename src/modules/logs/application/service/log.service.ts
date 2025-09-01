@@ -23,7 +23,7 @@ type WriteLogArgs = {
 export class LogService {
   constructor(private readonly logRepository: LogRepository) {}
 
-  private formatMessage(context: string, message: string) {
+  static formatMessage(context: string, message: string) {
     return `${context}: ${message}`;
   }
 
@@ -32,7 +32,7 @@ export class LogService {
    * @param data - данные для записи
    */
   private writeLog(data: WriteLogArgs) {
-    const formattedMessage = this.formatMessage(
+    const formattedMessage = LogService.formatMessage(
       data.input.context,
       data.input.message,
     );
@@ -75,6 +75,12 @@ export class LogService {
     // говорим что ошибка уже в логе
     if (data.errorInstance && data.errorInstance instanceof Error) {
       const typeErrorInstance = data.errorInstance as LoggedError;
+
+      if (typeErrorInstance.isLogged) {
+        // если ошибка уже была логировано, отменяем его лог
+        return;
+      }
+
       typeErrorInstance.isLogged = true;
       // сообщение ошибки, что бы понимать где точно ошибка
       data.payload.systemErrorMessage = typeErrorInstance.message;

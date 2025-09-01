@@ -12,6 +12,7 @@ import {
   LogEntity,
 } from 'src/modules/logs/domain/types/log-payload';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { AuthRateService } from '../../service/auth-rate.service';
 
 @CommandHandler(AuthenticateCommand)
 export class AuthenticateHandler
@@ -20,9 +21,9 @@ export class AuthenticateHandler
   constructor(
     private readonly userSessionService: UserSessionService,
     private readonly tokenService: TokenService,
-    private readonly hashService: HashService,
     private readonly usersService: UserService,
     private readonly logService: LogService,
+    private readonly authRateService: AuthRateService,
   ) {}
 
   async execute(command: AuthenticateCommand): Promise<AuthTokenResponse> {
@@ -51,8 +52,10 @@ export class AuthenticateHandler
       throw new NotFoundException('Не верный никнейм или пароль');
     }
 
-    const isPasswordEquals = await this.hashService.compare(
-      command.password,
+    await this.authRateService.checkLimit(command.nickname);
+
+    const isPasswordEquals = await HashService.compare(
+      command.password.normalize('NFC'),
       user.passwordHash,
     );
 

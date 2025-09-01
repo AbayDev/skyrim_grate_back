@@ -4,6 +4,7 @@
 export enum LogActor {
   User = 'user',
   System = 'system',
+  UnauthorizedUser = 'unauthorizedUser',
 }
 
 /**
@@ -13,6 +14,9 @@ export enum LogEntity {
   User = 'user',
   UserSession = 'user-session',
   Token = 'token',
+  Project = 'project',
+  Request = 'request',
+  Redis = 'redis',
 }
 
 /**
@@ -24,6 +28,7 @@ export enum ErrorLogReason {
   NicknameAlreadyExist = 'NicknameAlreadyExist',
   NicknameNotFound = 'NicknameNotFound',
   PasswordHashFailed = 'PasswordHashFailed',
+  PasswordStrengthFailed = 'PasswordStrengthFailed',
   TokenHashFailed = 'TokenHashFailed',
   TokenGenerateFailed = 'TokenGenerateFailed',
   TokenVerifyFailed = 'TokenVerifyFailed',
@@ -33,6 +38,13 @@ export enum ErrorLogReason {
   UserCreateFailed = 'UserCreateFailed',
   UserSessionCreateFailed = 'UserSessionCreateFailed',
   UserSessionDeleteFailed = 'UserSessionDeleteFailed',
+
+  ProjectCreateFailed = 'ProjectCreateFailed',
+  ProjectNotFound = 'ProjectNotFound',
+  ProjectUpdateFailed = 'ProjectUpdateFailed',
+
+  RedisScriptFailed = 'RedisScriptFailed',
+  RedisConnectFailed = 'RedisConnectFailed',
 }
 
 export interface BaseLogPayload {

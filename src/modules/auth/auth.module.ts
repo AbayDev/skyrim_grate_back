@@ -20,6 +20,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthenticateHandler } from './application/command/authenticate/authenticate.handler';
 import { ReauthenticateHandler } from './application/command/reauthenticate/reauthenticate.handler';
+import { PasswordStrengthService } from './application/service/password-strength.service';
+import { AuthRateService } from './application/service/auth-rate.service';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([UserSessionEntity])],
@@ -52,6 +54,8 @@ import { ReauthenticateHandler } from './application/command/reauthenticate/reau
     UserSessionRepository,
     TokenService,
     HashService,
+    AuthRateService,
+    PasswordStrengthService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
